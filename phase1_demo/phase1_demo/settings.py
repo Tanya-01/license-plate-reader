@@ -129,3 +129,6 @@ IMAGE_URL = '/temp_images/'
 
 MODELS_ROOT = os.path.join(BASE_DIR,'models')
 MODELS_URL = '/models/'
+
+PRED_ROOT = os.path.join(BASE_DIR,'demo','preds')
+PRED_URL = '/preds/'
