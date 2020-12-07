@@ -16,6 +16,7 @@ import matplotlib.patches as patches
 from matplotlib.ticker import NullLocator
 import numpy as np
 from PIL import Image
+from .preproc import preproc
 
 # Create your views here.
 
@@ -27,16 +28,19 @@ class Index(View):
     def post(self,request):
         image = request.FILES['img']
         ext = image.name.split('.')[-1]
+        img_name = "img."+ext
         for filename in os.listdir(settings.IMAGE_ROOT):
             os.remove(os.path.join(settings.IMAGE_ROOT,filename))
         with open(os.path.join(settings.IMAGE_ROOT,'img.'+str(ext)), 'wb+') as f:
             for chunk in image.chunks():
                 f.write(chunk)
+        
+        ### TODO:make modular
         dataloader = DataLoader(ImageFolder(settings.IMAGE_ROOT),
                                 batch_size=1,
                                 shuffle=False)
 
-        classes = load_classes( os.path.join(settings.MODELS_ROOT,'classes.names'))  # Extracts class labels from file
+        classes = load_classes(os.path.join(settings.MODELS_ROOT,'classes.names'))  # Extracts class labels from file
 
         Tensor = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
@@ -70,5 +74,11 @@ class Index(View):
                 im = Image.fromarray(img)
                 im1 = im.crop((x1.data.tolist(),y1.data.tolist(),x2.data.tolist(),y2.data.tolist()))
                 im1 = im1.save(os.path.join(settings.PRED_ROOT,"pred.png"))
+        ###
+        
+        preproc(src_path=os.path.join(settings.PRED_ROOT,"pred.png"), dest_path=os.path.join(settings.PREPROC_ROOT,"preproc.png")) #preprocess output
 
-        return render(request, self.template_name,{})
+        context = {'up':os.path.join(settings.IMAGE_URL,'img.'+str(ext)),
+                    'pred':os.path.join(settings.PRED_URL,"pred.png"),
+                    'preproc':os.path.join(settings.PREPROC_URL,"preproc.png")}
+        return render(request, self.template_name,context)

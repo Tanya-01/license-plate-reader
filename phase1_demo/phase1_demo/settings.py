@@ -132,3 +132,6 @@ MODELS_URL = '/models/'
 
 PRED_ROOT = os.path.join(BASE_DIR,'demo','preds')
 PRED_URL = '/preds/'
+
+PREPROC_ROOT = os.path.join(BASE_DIR,'demo','preproc')
+PREPROC_URL = '/preproc/'
