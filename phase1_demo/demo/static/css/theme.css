@@ -37,9 +37,9 @@ label{
     border-radius: 5px;
      }
 
-input[type="file"] {
+/*input[type="file"] {
     display: none;
-}
+}*/
 #textar{
     border: 3px solid black;
 }
@@ -47,7 +47,6 @@ input[type="file"] {
 .column {
   float: left;
   width: 25%;
-  flex-flow: row nowrap;
 }
 
 
