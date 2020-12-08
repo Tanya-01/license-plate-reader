@@ -1,0 +1,18 @@
+{% load static %}
+{{ PRED_ROOT }}
+<form method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <input type="file" name="img">
+    <button type="submit">Submit</button>
+</form>
+{% if up %}
+<img src="{{up}}" width="600px">
+{% endif %}
+{% if pred %}
+<img src="{{pred}}">
+{% endif %}
+{% if preproc %}
+<img src="{{preproc}}">
+{% endif %}
+{% if no %}
+<h1>{{no}}</h1>
+{% endif %}

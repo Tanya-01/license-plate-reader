@@ -17,6 +17,7 @@ from matplotlib.ticker import NullLocator
 import numpy as np
 from PIL import Image
 from .preproc import preproc
+from pytesseract import image_to_string
 
 # Create your views here.
 
@@ -77,8 +78,13 @@ class Index(View):
         ###
         
         preproc(src_path=os.path.join(settings.PRED_ROOT,"pred.png"), dest_path=os.path.join(settings.PREPROC_ROOT,"preproc.png")) #preprocess output
-
+        alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        options = "-c tessedit_char_whitelist={}".format(alphanumeric)
+        options += " --psm 7"
+        no = image_to_string(Image.open(os.path.join(settings.PREPROC_ROOT,"preproc.png")),config=options)
+        # no = image_to_string(Image.open(os.path.join(settings.PRED_ROOT,"pred.png")))
         context = {'up':os.path.join(settings.IMAGE_URL,'img.'+str(ext)),
                     'pred':os.path.join(settings.PRED_URL,"pred.png"),
-                    'preproc':os.path.join(settings.PREPROC_URL,"preproc.png")}
-        return render(request, self.template_name,context)
+                    'preproc':os.path.join(settings.PREPROC_URL,"preproc.png"),
+                    'no':no}
+        return render(request, self.template_name, context)
